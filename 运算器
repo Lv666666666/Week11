@@ -1,0 +1,53 @@
+package Express;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Work2 {
+
+	public static void main(String[] args) {
+		String express = "add(sub(10,max(1,0)),min(1,2))";
+		String temp = express;
+		String regex = "((add)|(sub)|(max)|(min)|(doubleMe))\\(\\d{1,},\\d{1,}\\)";
+		
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(express);
+		
+		while(m.find()){
+			String basicExp = m.group();
+			String str = cal(basicExp);
+			basicExp = basicExp.replaceAll("\\(", "\\\\(");
+			basicExp = basicExp.replaceAll("\\)", "\\\\)");
+			express = express.replaceAll(basicExp, str);
+			m = p.matcher(express);
+
+		}
+		System.out.println(temp + " = " + express);
+	}
+	
+	public static String cal(String str){
+		String result = "";
+		int R = 0;
+		String oper = str.substring(0,str.indexOf("("));
+		String first = str.substring(str.indexOf("(")+1, str.indexOf(","));
+
+		if(oper.equals("doubleMe")){
+			int firstNum = Integer.parseInt(first);
+			result = String.valueOf(firstNum*2);
+		}
+		else{
+			String second = str.substring(str.indexOf(",")+1,str.indexOf(")"));
+			int firstNum = Integer.parseInt(first);
+			int secondNum = Integer.parseInt(second);
+			switch(oper){
+			case "add":R = firstNum + secondNum;break;
+			case "sub":R = firstNum - secondNum;break;
+			case "max":R = firstNum>secondNum?firstNum:secondNum;break;
+			case "min":R = firstNum<secondNum?firstNum:secondNum;break;
+			}
+		}
+		result = String.valueOf(R);
+		return result;
+	}
+
+}
